@@ -1,7 +1,7 @@
 const notes = require('express').Router();
 const uuid = require('./helpers/uuid');
 const fs =require('fs');
-const readFromFile = util.promisfy(fs.)
+const readFromFile = util.promisfy(fs.readFile)
 
 // Post request based off of exercises
 notes.post('/api/notes', (req, res) => {
@@ -33,8 +33,10 @@ notes.post('/api/notes', (req, res) => {
               writeErr
                 ? console.error(writeErr)
                 : console.info('New notes have been added!')
-          );
+          )
     })
+    
+
 });
 
 // Get request based off of exercises
@@ -43,9 +45,9 @@ notes.get(`/api/notes`, (req, res) => {
 
     readFromFile('../db/db.json')
     .then((data) => {
-        res.json(JSON.parse)
-    })
-})
+        res.json(JSON.parse(data))
+    });
+});
 
 
 
