@@ -4,7 +4,7 @@ const fs =require('fs');
 const readFromFile = util.promisfy(fs.readFile)
 
 // Post request based off of exercises
-notes.post('/api/notes', (req, res) => {
+notes.post('/', (req, res) => {
     console.info(`${req.method} request received to add a note`);
 
     const {note} = req.body
@@ -18,7 +18,7 @@ notes.post('/api/notes', (req, res) => {
 
     const noteString = JSON.stringify(newNotes);
 
-    fs.readFile('../db/db.json', 'utf8', (err, data) => {
+    fs.readFile('./db/db.json', 'utf-8', (err, data) => {
         if(err) {
             console.log(err);
         }else {
@@ -40,7 +40,7 @@ notes.post('/api/notes', (req, res) => {
 });
 
 // Get request based off of exercises
-notes.get(`/api/notes`, (req, res) => {
+notes.get(`/`, (req, res) => {
     console.info(`${req.method} request granted for new notes`)
 
     readFromFile('../db/db.json')
@@ -49,7 +49,18 @@ notes.get(`/api/notes`, (req, res) => {
     });
 });
 
-
+// Delete request for notes
+notes.delete('/:id', (req, res) => {
+    readFromFile('./db/db.json', 'utf-8')
+    .then((data) => {
+        var odlerNotes = [].concat(JSON.parse(data));
+        var newNotes = odlerNotes.filter(note => note.id !== req.params.id)
+        writeToFile('./db/db.json', JSON.stringify(newNotes))
+        .then(() => res.json({msg: 'Everything is looking good'}))
+        .catch(err => res.status(400).json({msg: `There is not a note with this id ${req.params.id}`}))
+    });
+})
+// this should be everything
 
 
 
